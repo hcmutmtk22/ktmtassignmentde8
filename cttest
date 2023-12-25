@@ -1,0 +1,40 @@
+#Chuong trinh: ten chuong trinh
+#Data segment
+	.data
+#Cac dinh nghia bien
+#Cac cau nhac nhap du lieu
+fout: .asciiz "D:/File_IO_Mars4_5/fileout.txt"
+fword: .space 1024
+buffer: .asciiz "16"
+#Code segment
+	.text
+	.globl	main
+main:	
+#Nhap (syscall)
+	
+#Xu ly
+	#Open (for read) a file that does not exist
+	li $v0,13
+	la $a0,fout
+	li $a1,0
+	li $a2,0
+	syscall #v0 contain file descriptor
+	move $s6,$v0
+	#Read from file just opened
+	li $v0,14
+	move $a0,$s6
+	la $a1,fword
+	li $a2,1024
+	syscall
+#Xuat ket qua (syscall)
+xuat_kq:
+	li $v0,4
+	la $a0,fword
+	syscall
+#Close the file
+	li $v0,16
+	move $a0,$s6
+	syscall
+#ket thuc chuong trinh (syscall)
+	addiu	$v0,$zero,10
+	syscall
