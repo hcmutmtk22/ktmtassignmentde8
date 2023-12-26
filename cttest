@@ -3,9 +3,12 @@
 	.data
 #Cac dinh nghia bien
 #Cac cau nhac nhap du lieu
-fout: .asciiz "D:/File_IO_Mars4_5/fileout.txt"
-fword: .space 1024
+fout: .asciiz "D:/File_IO_Mars4_5/STRING.txt"
+fword: .space 40
 buffer: .asciiz "16"
+star: .asciiz "*"
+space: .asciiz " "
+endl: .asciiz "\n"
 #Code segment
 	.text
 	.globl	main
@@ -26,11 +29,54 @@ main:
 	la $a1,fword
 	li $a2,1024
 	syscall
+	
+	#fword contain all the character needed
+	
+	
 #Xuat ket qua (syscall)
 xuat_kq:
 	li $v0,4
 	la $a0,fword
 	syscall
+	#xuong dong
+	li $v0,4
+	la $a0,endl
+	syscall
+	#store fword into $t0, set i:=0
+	la $s1,fword #s1 holds the base address of fword
+	la $t0,fword #t0 holds the address of fword
+	add $s0,$zero,$zero #s0 = i, initialize i = 0
+	##for (int i=0;i<40;i++)
+	loop:
+	slti $t3,$s0,40 #t3 = 1 if s0<40
+	beqz $t3,endfor1 #s0>=40? endfor
+	add $t0,$s1,$s0
+	#if (fword[i]=='9') cout << '*'; else cout << ' ';
+	lb $t1,0($t0) #t1 contains the character fword[i]
+	la $t2,57 
+	bne $t1,$t2,else1
+	#print *
+	la $a0,star
+	li $v0,4
+	syscall
+	j endif1
+	else1:
+	#print " "
+	la $a0,space
+	li $v0,4
+	syscall
+	endif1:
+	addi $s0,$s0,1 #i++
+	j loop
+	endfor1:
+	#xuong dong
+	li $v0,4
+	la $a0,endl
+	syscall
+	##for (int i=0;i<40;i++)
+	#if (fword[i]=='9' or fword[i]=='8') cout << '*'; else cout << ' ';
+	#xuong dong
+	#...D
 #Close the file
 	li $v0,16
 	move $a0,$s6
